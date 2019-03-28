@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/users.model');
+const HttpData = require('../models/httpError.model');
 
 const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
 
@@ -20,16 +21,14 @@ module.exports = {
             result.status = status;
             result.result = user;
           } else {
-            status = 500;
-            result.status = status;
-            result.error = err;
+            status = 409;
+            result = HttpData(status, 'User Already Exists');
           }
           res.status(status).send(result);
         });
       } else {
         status = 500;
-        result.status = status;
-        result.error = err;
+        result = HttpData(status, null, err);
         res.status(status).send(result);
       }
     });
@@ -50,43 +49,39 @@ module.exports = {
                 try {
                   status = 200;
                   // Create a token
-                  console.log('status', status)
+                  //console.log('status', status)
                   const payload = { user: user.name };
                   const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
 
-                  console.log('TOKEN', token);
+                  // console.log('TOKEN', token);
+                  result = HttpData(status, 'Token Created Successfully');
                   result.token = token;
-                  result.status = status;
                   result.user = user.name;
                 } catch (err) {
-                  console.log('Error while creating token', err);
+                  console.log('Error while creating token', HttpData(500));
                 }
 
               } else {
                 status = 401;
-                result.status = status;
-                result.error = `Authentication error`;
+                result = HttpData(status, 'Authentication error')
               }
               res.status(status).send(result);
             }).catch(err => {
               status = 500;
-              result.status = status;
-              result.error = err;
+              result = HttpData(status);
               res.status(status).send(result);
             });
           } else {
             status = 404;
-            result.status = status;
-            result.error = err;
+            result = HttpData(status);
             res.status(status).send(result);
           }
         });
       } else {
         status = 500;
-        result.status = status;
-        result.error = err;
+        result = HttpData(status);
         res.status(status).send(result);
       }
     });
@@ -103,26 +98,22 @@ module.exports = {
         if (payload && payload.user === 'admin') {
           User.find({}, (err, users) => {
             if (!err) {
-              result.status = status;
-              result.error = err;
+              result = HttpData(status);
               result.result = users;
             } else {
               status = 500;
-              result.status = status;
-              result.error = err;
+              result = HttpData(status, null, err);
             }
             res.status(status).send(result);
           });
         } else {
           status = 401;
-          result.status = status;
-          result.error = `Authentication error`;
+          result = HttpData(status, 'Authentication Error');
           res.status(status).send(result);
         }
       } else {
         status = 500;
-        result.status = status;
-        result.error = err;
+        result = HttpData(status, null, err);
         res.status(status).send(result);
       }
     });
