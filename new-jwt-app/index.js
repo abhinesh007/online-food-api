@@ -8,9 +8,9 @@ const app = express();
 const router = express.Router();
 
 const environment = process.env.NODE_ENV; // development
-const stage = require('./config.js')[environment];
+const stage = require('./config/config')[environment];
 
-const routes = require('./routes/index.js');
+const routes = require('./app/routes/index');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

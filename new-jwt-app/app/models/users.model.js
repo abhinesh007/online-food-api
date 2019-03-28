@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const environment = process.env.NODE_ENV;
-const stage = require('../config')[environment];
+const stage = require('../../config/config')[environment];
 
 // schema maps to a collection
 const Schema = mongoose.Schema;
