@@ -1,0 +1,25 @@
+{
+  "name": "online-food-api",
+  "version": "0.0.1",
+  "description": "POC for online food ordering app. Based on ES6, NodejS and Hapi server using MongoDb",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development nodemon index.js"
+  },
+  "author": "Abhinesh Gour",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "body-parser": "^1.18.3",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
+    "mongoose": "^5.4.19"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.10"
+  }
+}
