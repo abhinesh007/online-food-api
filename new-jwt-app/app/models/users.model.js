@@ -18,8 +18,17 @@ const userSchema = new Schema({
     type: 'String',
     required: true,
     trim: true
+  },
+  isAdmin: {
+    type: 'Boolean',
+    required: true
+  },
+  accessLevel: {
+    type: 'String',
+    required: false
   }
 });
+
 
 userSchema.pre('save', function (next) {
   const user = this;

@@ -78,9 +78,11 @@ let errorGenerator = (code, errorMsg, err) => {
   }
   if (err) {
     errObj.error = err;
+    errObj.errorMsg = errorMsg ? errorMsg : 'Something went wrong!';
+  } else {
+    errObj.userMsg = errorMsg ? errorMsg : 'Operation completed Successfully!';
   }
-  errObj.errorMsg = errorMsg ? errorMsg : 'Something went wrong!';
-
+  
   return errObj;
 }
 

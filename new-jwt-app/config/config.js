@@ -1,6 +1,6 @@
 module.exports = {
   development: {
-    port: 3000,
+    port: 5000,
     saltingRounds: 10
   }
 }

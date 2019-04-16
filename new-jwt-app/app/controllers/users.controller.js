@@ -13,16 +13,16 @@ module.exports = {
       let result = {};
       let status = 201;
       if (!err) {
-        const { name, password } = req.body;
-        const user = new User({ name, password }); // document = instance of a model
+        const { name, password, isAdmin, accessLevel } = req.body;
+        const user = new User({ name, password, isAdmin, accessLevel }); // document = instance of a model
         // TODO: We can hash the password here before we insert instead of in the model
         user.save((err, user) => {
           if (!err) {
-            result.status = status;
+            result = HttpData(status, 'User Created successfully');
             result.result = user;
           } else {
             status = 409;
-            result = HttpData(status, 'User Already Exists');
+            result = HttpData(status, 'User Already Exists', err);
           }
           res.status(status).send(result);
         });
@@ -41,7 +41,7 @@ module.exports = {
       let status = 200;
       if (!err) {
         User.findOne({ name }, (err, user) => {
-          console.log('user, err', user, err);
+         // console.log('user, err', user, err);
           if (!err && user) {
             // We could compare passwords in our model instead of below as well
             bcrypt.compare(password, user.password).then(match => {
@@ -50,7 +50,7 @@ module.exports = {
                   status = 200;
                   // Create a token
                   //console.log('status', status)
-                  const payload = { user: user.name };
+                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel,  };
                   const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
@@ -94,8 +94,8 @@ module.exports = {
         const payload = req.decoded;
         // TODO: Log the payload here to verify that it's the same payload
         //  we used when we created the token
-        // console.log('PAYLOAD', payload);
-        if (payload && payload.user === 'admin') {
+        console.log('payload', payload);
+        if (payload && payload.isAdmin && payload.accessLevel === 'RW') {
           User.find({}, (err, users) => {
             if (!err) {
               result = HttpData(status);
