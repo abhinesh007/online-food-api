@@ -3,6 +3,9 @@ require('dotenv').config(); // Sets up dotenv as soon as our application starts
 const express = require('express'); 
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 const router = express.Router();
@@ -16,6 +19,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+const sessionDb = mongoose.connection;
+
+try {
+  app.use(session({
+    secret: 'work hard',
+    resave: false, //don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    store: new MongoStore({
+      mongooseConnection: sessionDb
+    })
+  }));
+} catch(err) {
+  console.log(err);
+}
+
 
 if (environment !== 'production') {
   app.use(logger('dev'));

@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+var mongoose = require('mongoose');
 
 const User = require('../models/users.model');
 const HttpData = require('../models/httpError.model');
@@ -59,6 +59,8 @@ module.exports = {
                   result = HttpData(status, 'Token Created Successfully');
                   result.token = token;
                   result.user = user.name;
+                  req.session.loggedInUser = user.name; 
+                  console.log('req.session', req.session);
                 } catch (err) {
                   console.log('Error while creating token', HttpData(500));
                 }

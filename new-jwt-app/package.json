@@ -6,15 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "debug-dev": "cross-env NODE_ENV=development nodemon --inspect index.js"
+    "debug-dev": "cross-env NODE_ENV=development node --inspect index.js"
   },
   "author": "Abhinesh Gour",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
+    "express-session": "^1.16.1",
     "jsonwebtoken": "^8.5.0",
     "mongoose": "^5.4.19"
   },
