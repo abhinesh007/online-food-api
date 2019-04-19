@@ -22,18 +22,18 @@ app.use(bodyParser.urlencoded({
 
 const sessionDb = mongoose.connection;
 
-try {
-  app.use(session({
-    secret: 'work hard',
-    resave: false, //don't save session if unmodified
-    saveUninitialized: false, // don't create session until something stored
-    store: new MongoStore({
-      mongooseConnection: sessionDb
-    })
-  }));
-} catch(err) {
-  console.log(err);
-}
+// try {
+//   app.use(session({
+//     secret: 'work hard',
+//     resave: false, //don't save session if unmodified
+//     saveUninitialized: false, // don't create session until something stored
+//     store: new MongoStore({
+//       mongooseConnection: sessionDb
+//     })
+//   }));
+// } catch(err) {
+//   console.log(err);
+// }
 
 
 if (environment !== 'production') {
