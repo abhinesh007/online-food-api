@@ -58,7 +58,13 @@ module.exports = {
                   // console.log('TOKEN', token);
                   result = HttpData(status, 'Token Created Successfully');
                   result.token = token;
-                  result.user = user.name;
+                  const userEmail = user.email? user.email:'';
+                  result.userData = {
+                    userEmail: userEmail,
+                    userName: user.name,
+                    isAdmin: user.isAdmin,
+                    accessLevel: user.accessLevel
+                  };
                   req.session.loggedInUser = user.name; 
                   console.log('req.session', req.session);
                 } catch (err) {

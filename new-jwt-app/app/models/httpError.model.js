@@ -1,72 +1,72 @@
 let error = {};
 
 error.e200 = {
-  staus: 200,
+  status: 200,
   message: 'Success'
 }
 
 error.e201 = {
-  staus: 201,
+  status: 201,
   message: 'Created'
 }
 
 error.e204 = {
-  staus: 204,
+  status: 204,
   message: 'No Content'
 }
 
 error.e304 = {
-  staus: 304,
+  status: 304,
   message: 'Not Modified'
 }
 
 error.e400 = {
-  staus: 400,
+  status: 400,
   message: 'Bad Request'
 }
 
 error.e401 = {
-  staus: 401,
+  status: 401,
   message: 'Unauthorized'
 }
 
 error.e402 = {
-  staus: 402,
+  status: 402,
   message: 'Payment Required'
 }
 
 error.e403 = {
-  staus: 403,
+  status: 403,
   message: 'Forbidden'
 }
 
 error.e404 = {
-  staus: 404,
+  status: 404,
   message: 'Not Found'
 }
 
 error.e409 = {
-  staus: 409,
+  status: 409,
   message: 'Conflict'
 }
 
 error.e500 = {
-  staus: 500,
+  status: 500,
   message: 'Internal Server Error'
 }
 
 error.e502 = {
-  staus: 502,
+  status: 502,
   message: 'Bad Gateway'
 }
 
 error.e503 = {
-  staus: 503,
+  status: 503,
   message: 'Service Unavailable'
 }
 
 error.e504 = {
-  staus: 504,
+  status: 504,
   message: 'Gateway Timeout'
 }
 
