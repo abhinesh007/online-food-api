@@ -6,9 +6,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 
 const app = express();
 const router = express.Router();
+app.use(cors());
 
 const environment = process.env.NODE_ENV; // development
 const stage = require('./config/config')[environment];
