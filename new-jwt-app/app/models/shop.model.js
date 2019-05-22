@@ -11438,15 +11438,30 @@ let FoodItemSchema = new mongoose.Schema({
   description: String,
   displayOrder: String,
   enabled: String,
-  id: String,
+  id: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
   isPopular: String,
   inStock: String,
   itemDiscount: String,
   isVeg: String,
-  name: String,
+  name: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
   price: String,
   recommended: String,
-  restId: String,
+  restId: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
 });
 
 // let FoodItemsListSchema = new mongoose.Schema({
