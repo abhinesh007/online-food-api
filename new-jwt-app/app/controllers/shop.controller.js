@@ -63,6 +63,32 @@ module.exports = {
         res.status(status).send(result);
       }
     });
+  },
+
+  createFoodItems: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let status = 201;
+      let itemsData = req.body;
+
+      if (!err && itemsData) {
+        FoodItem.insertMany( itemsData, (err) => {
+          if (!err) {
+            result = HttpData(status, 'Item Created successfully');
+            result.result = itemsData;
+          } else {
+            status = 409;
+            result = HttpData(status, 'Item Already Exists', err);
+          }
+          res.status(status).send(result);
+        });
+      } else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+      
+    });
   }
 
 }

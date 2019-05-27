@@ -5,7 +5,7 @@ module.exports = (router) => {
   router.route('/shop')
     // .post(shopController.add)
     .get(shopController.getShopDummy) // This route is now protected
-    .post(shopController.createFoodItem);
+    .post(shopController.createFoodItems);
 
   router.route('/shop/:data')
     .get(shopController.getShopInventory)
