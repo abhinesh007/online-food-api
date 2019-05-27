@@ -9,4 +9,7 @@ module.exports = (router) => {
 
   router.route('/shop/:data')
     .get(shopController.getShopInventory)
+
+  router.route('/shop/update')
+    .post(shopController.updateFoodItem)
 };

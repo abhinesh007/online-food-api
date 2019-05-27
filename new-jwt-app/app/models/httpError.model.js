@@ -10,6 +10,11 @@ error.e201 = {
   message: 'Created'
 }
 
+error.e202 = {
+  status: 202,
+  message: 'Accepted'
+}
+
 error.e204 = {
   status: 204,
   message: 'No Content'

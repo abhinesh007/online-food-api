@@ -65,6 +65,36 @@ module.exports = {
     });
   },
 
+  updateFoodItem: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let data = req.body;
+      let status = 200;
+      if (!err) {
+        let query = {'id': data.id}
+        //const { category, cloudinaryImageId, description, displayOrder, enabled, id, isPopular, inStock, itemDiscount, isVeg, name, price, recommended, restId } = req.body;
+       // const Item = new FoodItem({ category, cloudinaryImageId, description, displayOrder, enabled, id, isPopular, inStock, itemDiscount, isVeg, name, price, recommended, restId });
+       const Item = new FoodItem(data);
+        delete Item._doc._id;
+
+        FoodItem.findOneAndUpdate(query, Item, {upsert:true}, (err, item) => {
+          if (!err) {
+            result = HttpData(status, 'Item Updated successfully');
+            result.result = item;
+          } else {
+            status = 404;
+            result = HttpData(status, 'Item Not Found', err);
+          }
+          res.status(status).send(result);
+        });
+      } else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+    });
+  },
+
   createFoodItems: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
