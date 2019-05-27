@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+var mongoose = require('mongoose');
 
 const User = require('../models/users.model');
 const HttpData = require('../models/httpError.model');
@@ -49,16 +49,23 @@ module.exports = {
                 try {
                   status = 200;
                   // Create a token
-                  //console.log('status', status)
                   const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel,  };
-                  const options = { expiresIn: '2d', issuer: 'https://scotch.io' };
+                  const options = { expiresIn: '2d', issuer: 'https://test.com' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
 
-                  // console.log('TOKEN', token);
                   result = HttpData(status, 'Token Created Successfully');
-                  result.token = token;
-                  result.user = user.name;
+                  // result.token = token;
+                  const userEmail = user.email? user.email:'';
+                  result.userData = {
+                    userEmail: userEmail,
+                    userName: user.name,
+                    isAdmin: user.isAdmin,
+                    accessLevel: user.accessLevel,
+                    token: token
+                  };
+                  // req.session.loggedInUser = user.name; 
+                  // console.log('req.session', req.session);
                 } catch (err) {
                   console.log('Error while creating token', HttpData(500));
                 }
@@ -76,6 +83,7 @@ module.exports = {
           } else {
             status = 404;
             result = HttpData(status);
+            result.userData = null;
             res.status(status).send(result);
           }
         });
@@ -92,14 +100,13 @@ module.exports = {
       let status = 200;
       if (!err) {
         const payload = req.decoded;
-        // TODO: Log the payload here to verify that it's the same payload
         //  we used when we created the token
         console.log('payload', payload);
         if (payload && payload.isAdmin && payload.accessLevel === 'RW') {
           User.find({}, (err, users) => {
             if (!err) {
               result = HttpData(status);
-              result.result = users;
+              result.userList = users;
             } else {
               status = 500;
               result = HttpData(status, null, err);

@@ -1,4 +1,6 @@
-let shop_data =  {
+const mongoose = require('mongoose');
+
+let shop_data = {
   "id": "8383",
   "bgColor": null,
   "logo": null,
@@ -11430,4 +11432,44 @@ let shop_data =  {
   "slotInvalid": false
 };
 
-module.exports = shop_data;
+let FoodItemSchema = new mongoose.Schema({
+  category: String,
+  cloudinaryImageId: String,
+  description: String,
+  displayOrder: String,
+  enabled: String,
+  id: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
+  isPopular: String,
+  inStock: String,
+  itemDiscount: String,
+  isVeg: String,
+  name: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
+  price: String,
+  recommended: String,
+  restId: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
+});
+
+// let FoodItemsListSchema = new mongoose.Schema({
+//   items: [FoodItemSchema],
+// });
+
+
+module.exports = {
+  shop_data: shop_data,
+  FoodItemSchema: mongoose.model('FoodItem', FoodItemSchema)
+} 
