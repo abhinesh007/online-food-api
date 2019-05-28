@@ -11434,6 +11434,7 @@ let shop_data = {
 
 let FoodItemSchema = new mongoose.Schema({
   category: String,
+  subCategory: String,
   cloudinaryImageId: String,
   description: String,
   displayOrder: String,
