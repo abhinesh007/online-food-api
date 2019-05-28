@@ -95,6 +95,33 @@ module.exports = {
     });
   },
 
+  deleteFoodItem: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let query = {'id': req.body.id}
+      let status = 202;
+      if (!err) {
+        // const Item = new FoodItem(data);
+        // delete Item._doc._id;
+
+        FoodItem.findOneAndDelete(query, (err, item) => {
+          if (!err) {
+            result = HttpData(status, 'Item Deleted successfully');
+            result.result = item;
+          } else {
+            status = 404;
+            result = HttpData(status, 'Item Not Found', err);
+          }
+          res.status(status).send(result);
+        });
+      } else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+    });
+  },
+
   createFoodItems: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};

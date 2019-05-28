@@ -12,4 +12,7 @@ module.exports = (router) => {
 
   router.route('/shop/update')
     .post(shopController.updateFoodItem)
+
+  router.route('/shop/delete')
+    .post(shopController.deleteFoodItem)
 };
