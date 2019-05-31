@@ -11438,17 +11438,17 @@ let FoodItemSchema = new mongoose.Schema({
   cloudinaryImageId: String,
   description: String,
   displayOrder: String,
-  enabled: String,
+  enabled: Boolean,
   id: {
     type: 'String',
     required: true,
     trim: true,
     unique: true
   },
-  isPopular: String,
-  inStock: String,
+  isPopular: Boolean,
+  inStock: Boolean,
   itemDiscount: String,
-  isVeg: String,
+  isVeg: Boolean,
   name: {
     type: 'String',
     required: true,
