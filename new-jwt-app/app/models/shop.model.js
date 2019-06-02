@@ -11456,7 +11456,7 @@ let FoodItemSchema = new mongoose.Schema({
     unique: true
   },
   price: String,
-  recommended: String,
+  recommended: Boolean,
   restId: {
     type: 'String',
     required: true,
