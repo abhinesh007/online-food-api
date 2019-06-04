@@ -11478,7 +11478,6 @@ const CATEGORY_LIST = [
       'Veg',
       'Egg',
       'Non-Veg',
-      'Platter',
       'Dal',
       'Biyani',
       'Rice-Breads',
