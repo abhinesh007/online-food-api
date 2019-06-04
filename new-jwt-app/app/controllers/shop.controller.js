@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 const shopData = require('../models/shop.model').shop_data;
+const categoryList = require('../models/shop.model').CATEGORY_LIST;
 // const Shop = require('../models/shop.model').FoodItemSchema;
 const FoodItem = require('../models/shop.model').FoodItemSchema;
 const HttpData = require('../models/httpError.model');
@@ -40,7 +41,84 @@ module.exports = {
       }
     });
   },
-  
+
+  getShopFormattedInventory: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      result.shopFormattedData = {};
+
+       formatDataCategorywise = async() => {
+        for (let i = 0; i < categoryList.length; i++) {
+
+          if (categoryList[i].category === 'Recommended') {
+           await FoodItem.find({ recommended: true }, (err, items) => {
+              if (!err) {
+                result.shopFormattedData.Recommended = items;
+              } else {
+                status = 500;
+                result = HttpData(status, null, err);
+              }
+              // res.status(status).send(result);
+            });
+          } else {
+           await FoodItem.find({ category: categoryList[i].category }, (err, items) => {
+              if (!err) {
+                result.shopFormattedData[categoryList[i].category] = items;
+              } else {
+                status = 500;
+                result = HttpData(status, null, err);
+              }
+            });
+
+            if (categoryList[i].subCat) {
+              for (let j = 0; j < categoryList[i].subCat.length; j++) {
+               await FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j]}, (err, items) => {
+                  if (!err) {
+                    if (!result.shopFormattedData[categoryList[i].category]) {
+                      result.shopFormattedData[categoryList[i].category] = {};
+                    }
+                    result.shopFormattedData[categoryList[i].category][categoryList[i].subCat[j]] = items;
+                  } else {
+                    status = 500;
+                    result = HttpData(status, null, err);
+                  }
+                });
+              }
+            }
+          }
+        }
+
+        return  result;
+      }
+
+
+      let status = 200;
+      if (!err) {
+        // const payload = req.decoded;
+        //  we used when we created the token
+        // console.log('payload', payload);
+        formatDataCategorywise()
+        .then((data) => {
+          result = data;
+          res.status(status).send(result)
+        })
+        .catch((error) => {
+          console.log(error)
+          status = 500;
+          result = HttpData(status, null, err);
+          res.status(status).send(result);
+        });
+        
+      } else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+
+
+    });
+  },
+
   createFoodItem: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
@@ -66,20 +144,20 @@ module.exports = {
       }
     });
   },
-  
+
   updateFoodItem: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
       let data = Object.assign({}, req.body);
       let status = 200;
       if (!err) {
-        let query = {'id': req.body.id}
+        let query = { 'id': req.body.id }
         //const { category, cloudinaryImageId, description, displayOrder, enabled, id, isPopular, inStock, itemDiscount, isVeg, name, price, recommended, restId } = req.body;
-       // const Item = new FoodItem({ category, cloudinaryImageId, description, displayOrder, enabled, id, isPopular, inStock, itemDiscount, isVeg, name, price, recommended, restId });
-       const Item = new FoodItem(data);
+        // const Item = new FoodItem({ category, cloudinaryImageId, description, displayOrder, enabled, id, isPopular, inStock, itemDiscount, isVeg, name, price, recommended, restId });
+        const Item = new FoodItem(data);
         delete Item._doc._id;
 
-        FoodItem.findOneAndUpdate(query, Item, {upsert:true}, (err, item) => {
+        FoodItem.findOneAndUpdate(query, Item, { upsert: true }, (err, item) => {
           if (!err) {
             result = HttpData(status, 'Item Updated successfully');
             result.result = item;
@@ -100,7 +178,7 @@ module.exports = {
   deleteFoodItem: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
-      let query = {'id': req.body.id}
+      let query = { 'id': req.body.id }
       let status = 202;
       if (!err) {
         // const Item = new FoodItem(data);
@@ -131,7 +209,7 @@ module.exports = {
       let itemsData = req.body;
 
       if (!err && itemsData) {
-        FoodItem.insertMany( itemsData, (err) => {
+        FoodItem.insertMany(itemsData, (err) => {
           if (!err) {
             result = HttpData(status, 'Item Created successfully');
             result.result = itemsData;
@@ -146,7 +224,7 @@ module.exports = {
         result = HttpData(status, null, err);
         res.status(status).send(result);
       }
-      
+
     });
   }
 

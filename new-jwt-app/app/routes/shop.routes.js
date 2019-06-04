@@ -8,7 +8,7 @@ module.exports = (router) => {
     .post(shopController.createFoodItems);
 
   router.route('/shop/:data')
-    .get(shopController.getShopInventory)
+    .get(shopController.getShopFormattedInventory)
 
   router.route('/shop/update')
     .post(shopController.updateFoodItem)

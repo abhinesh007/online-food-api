@@ -11465,6 +11465,76 @@ let FoodItemSchema = new mongoose.Schema({
   },
 });
 
+const CATEGORY_LIST = [
+  {
+    category: 'Recommended',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Main-Course',
+    collapsed: false,
+    subCat: [
+      'Veg',
+      'Egg',
+      'Non-Veg',
+      'Platter',
+      'Dal',
+      'Biyani',
+      'Rice-Breads',
+      'Fried-Rice-Noodles'
+    ]
+  },
+  {
+    category: 'Soups',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Starters',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Egg',
+      'Non-Veg',
+      'Platter'
+    ]
+  },
+  {
+    category: 'Shop-special',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Thalis',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Combos',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Desserts',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Baverages',
+    collapsed: true,
+    subCat: null
+  }
+];
 // let FoodItemsListSchema = new mongoose.Schema({
 //   items: [FoodItemSchema],
 // });
@@ -11472,5 +11542,6 @@ let FoodItemSchema = new mongoose.Schema({
 
 module.exports = {
   shop_data: shop_data,
+  CATEGORY_LIST: CATEGORY_LIST,
   FoodItemSchema: mongoose.model('FoodItem', FoodItemSchema)
 } 
