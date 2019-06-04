@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 
 const User = require('../models/users.model');
+const Address = require('../models/address.model');
 const HttpData = require('../models/httpError.model');
 
 const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
@@ -41,7 +42,7 @@ module.exports = {
       let status = 200;
       if (!err) {
         User.findOne({ name }, (err, user) => {
-         // console.log('user, err', user, err);
+          // console.log('user, err', user, err);
           if (!err && user) {
             // We could compare passwords in our model instead of below as well
             bcrypt.compare(password, user.password).then(match => {
@@ -49,14 +50,14 @@ module.exports = {
                 try {
                   status = 200;
                   // Create a token
-                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel,  };
+                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, };
                   const options = { expiresIn: '2d', issuer: 'https://test.com' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
 
                   result = HttpData(status, 'Token Created Successfully');
                   // result.token = token;
-                  const userEmail = user.email? user.email:'';
+                  const userEmail = user.email ? user.email : '';
                   result.userData = {
                     userEmail: userEmail,
                     userName: user.name,
@@ -124,5 +125,36 @@ module.exports = {
         res.status(status).send(result);
       }
     });
+  },
+
+  addAddress: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let status = 201;
+      const payload = req.decoded;
+      //  we used when we created the token
+      console.log('payload', payload);
+
+      let address = req.body;
+
+      if (!err && address) {
+        Address.create(address, (err) => {
+          if (!err) {
+            result = HttpData(status, 'Item Created successfully');
+            result.result = address;
+          } else {
+            status = 409;
+            result = HttpData(status, 'Item Already Exists', err);
+          }
+          res.status(status).send(result);
+        });
+      } else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+
+    });
   }
+
 }
