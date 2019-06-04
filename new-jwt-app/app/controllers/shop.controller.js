@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+mongoose.Promise = Promise;
 
 const shopData = require('../models/shop.model').shop_data;
 const categoryList = require('../models/shop.model').CATEGORY_LIST;
@@ -46,49 +47,85 @@ module.exports = {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
       result.shopFormattedData = {};
+      promises = [];
 
-       formatDataCategorywise = async() => {
+      formatDataCategorywise = async () => {
         for (let i = 0; i < categoryList.length; i++) {
-
           if (categoryList[i].category === 'Recommended') {
-           await FoodItem.find({ recommended: true }, (err, items) => {
-              if (!err) {
+            // promises.push(FoodItem.find({ recommended: true }));
+
+            const temp0 = await FoodItem.find({ recommended: true })
+              .then((items) => {
+                result.shopFormattedData.Recommended = {};
                 result.shopFormattedData.Recommended = items;
-              } else {
-                status = 500;
-                result = HttpData(status, null, err);
-              }
-              // res.status(status).send(result);
-            });
+                return items;
+              })
+              .catch((err) => {
+                console.log('error in find', err);
+              });
+            //  await FoodItem.find({ recommended: true }, (err, items) => {
+            //     if (!err) {
+            //       result.shopFormattedData.Recommended = items;
+            //     } else {
+            //       status = 500;
+            //       result = HttpData(status, null, err);
+            //     }
+            //     // res.status(status).send(result);
+            //   });
           } else {
-           await FoodItem.find({ category: categoryList[i].category }, (err, items) => {
-              if (!err) {
-                result.shopFormattedData[categoryList[i].category] = items;
-              } else {
-                status = 500;
-                result = HttpData(status, null, err);
-              }
-            });
+
+            //  promises.push(FoodItem.find({ category: categoryList[i].category }));
+
+            const temp1 = await FoodItem.find({ category: categoryList[i].category })
+              .then((items) => {
+                result.shopFormattedData[categoryList[i].category] = {'items': items }
+                return items
+              })
+              .catch((err) => {
+                console.log('error in find', err);
+              });
+            // await FoodItem.find({ category: categoryList[i].category }, (err, items) => {
+            //     if (!err) {
+            //       result.shopFormattedData[categoryList[i].category] = items;
+            //     } else {
+            //       status = 500;
+            //       result = HttpData(status, null, err);
+            //     }
+            //   });
 
             if (categoryList[i].subCat) {
               for (let j = 0; j < categoryList[i].subCat.length; j++) {
-               await FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j]}, (err, items) => {
-                  if (!err) {
+
+                //  promises.push(FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j]}));
+
+                const temp2 = await FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j] })
+                  .then((items) => {
                     if (!result.shopFormattedData[categoryList[i].category]) {
                       result.shopFormattedData[categoryList[i].category] = {};
                     }
                     result.shopFormattedData[categoryList[i].category][categoryList[i].subCat[j]] = items;
-                  } else {
-                    status = 500;
-                    result = HttpData(status, null, err);
-                  }
-                });
+                    return items;
+                  })
+                  .catch((err) => {
+                    console.log('error in find', err);
+                  });
+                //  await FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j]}, (err, items) => {
+                //     if (!err) {
+                //       if (!result.shopFormattedData[categoryList[i].category]) {
+                //         result.shopFormattedData[categoryList[i].category] = {};
+                //       }
+                //       result.shopFormattedData[categoryList[i].category][categoryList[i].subCat[j]] = items;
+                //     } else {
+                //       status = 500;
+                //       result = HttpData(status, null, err);
+                //     }
+                //   });
               }
             }
           }
         }
 
-        return  result;
+        return result;
       }
 
 
@@ -98,17 +135,20 @@ module.exports = {
         //  we used when we created the token
         // console.log('payload', payload);
         formatDataCategorywise()
-        .then((data) => {
-          result = data;
-          res.status(status).send(result)
-        })
-        .catch((error) => {
-          console.log(error)
-          status = 500;
-          result = HttpData(status, null, err);
-          res.status(status).send(result);
-        });
-        
+          .then((data) => {
+            result = data;
+            res.status(status).send(result)
+          })
+          .catch((error) => {
+            console.log(error)
+            status = 500;
+            result = HttpData(status, null, err);
+            res.status(status).send(result);
+          });
+
+        // result =  formatDataCategorywise();
+        // res.status(status).send(result);
+
       } else {
         status = 500;
         result = HttpData(status, null, err);
