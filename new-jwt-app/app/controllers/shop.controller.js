@@ -3,7 +3,6 @@ mongoose.Promise = Promise;
 
 const shopData = require('../models/shop.model').shop_data;
 const categoryList = require('../models/shop.model').CATEGORY_LIST;
-// const Shop = require('../models/shop.model').FoodItemSchema;
 const FoodItem = require('../models/shop.model').FoodItemSchema;
 const HttpData = require('../models/httpError.model');
 const ShopService = require('../services/shop.utils.service');
