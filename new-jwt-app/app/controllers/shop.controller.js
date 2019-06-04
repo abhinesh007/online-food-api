@@ -54,7 +54,7 @@ module.exports = {
             await FoodItem.find({ recommended: true })
               .then((items) => {
                 result.shopFormattedData.Recommended = {};
-                result.shopFormattedData.Recommended = items;
+                result.shopFormattedData.Recommended.items = items;
               })
               .catch((err) => {
                 console.log('error in find', err);
