@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const uuidv1 = require('uuid/v1');
+
 const jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 
@@ -14,8 +16,9 @@ module.exports = {
       let result = {};
       let status = 201;
       if (!err) {
-        const { name, password, isAdmin, accessLevel } = req.body;
-        const user = new User({ name, password, isAdmin, accessLevel }); // document = instance of a model
+        let userData = req.body;
+        userData.uuid = uuidv1();
+        const user = new User(userData); // document = instance of a model
         // TODO: We can hash the password here before we insert instead of in the model
         user.save((err, user) => {
           if (!err) {

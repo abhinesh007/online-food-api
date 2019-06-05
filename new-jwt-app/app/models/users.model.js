@@ -26,7 +26,13 @@ const userSchema = new Schema({
   accessLevel: {
     type: 'String',
     required: false
-  }
+  },
+  uuid: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
 });
 
 
