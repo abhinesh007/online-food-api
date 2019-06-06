@@ -48,70 +48,73 @@ module.exports = {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       const tokenData = req.decoded;
       const reqData = req.body;
+      let isUserValidated = false;
+      let allCartItemsValid = false;
+
       let result = {};
-      result.cartResponse = {};
+      result.cartResponse = {
+        cartItems: [],
+        cartStatus: {
+          status: 'Invalid',
+          statusMsg:''
+        }
+      };
+
+
+      validateCartItems = async (isUserValidated) => {
+        try {
+          if (reqData.cartItems) {
+            for (let i=0; i < reqData.cartItems.length; i++) {
+              // let reqItem of reqData.cartItems
+              let reqItem = reqData.cartItems[i];
+              await FoodItem.findOne({ id: reqItem.id })
+                .then((item) => {
+                  if ((item.restId == reqItem.restId) && item.enabled && item.inStock) {
+                    allCartItemsValid = true;
+                    result.cartResponse.cartItems.push(item);
+                  } else {
+                    allCartItemsValid = false;
+                  }
+                })
+                .catch((err) => {
+                  console.log('error in find', err);
+                });
+            }
+            if (allCartItemsValid) {
+              result.cartResponse.cartStatus.status = 'Valid';
+              result.cartResponse.cartStatus.statusMsg = 'Cart Validated';
+            } else {
+              result.cartResponse.cartStatus.status = 'Invalid';
+              result.cartResponse.cartStatus = 'Some Items in Cart are Validated';
+            }
+          }
+          return result;
+        } catch (error) {
+          console.log('Some thing wrong went while iteration in validating cart', error);
+        }
+      }
 
       try {
         if (reqData && (reqData.isUserLoggedIn || reqData.isUserLoggedIn === 'true')) {
           // userLoggedIn in UI
           if (tokenData && (reqData.userName && reqData.userName !== '')) {
             if ((tokenData.user == reqData.userName)) {
-
+              // checkout cart
+              isUserValidated = true;
+              validateCartItems(isUserValidated);
             }
           }
         } else {
-
+          // home page non user cart
+          validateCartItems(isUserValidated);
         }
       } catch (error) {
         console.log('Some thing wrong went while validating cart', error);
       }
 
-
-      formatDataCategorywise = async () => {
-        for (let i = 0; i < categoryList.length; i++) {
-          if (categoryList[i].category === 'Recommended') {
-
-            await FoodItem.find({ recommended: true })
-              .then((items) => {
-                result.shopFormattedData.Recommended = {};
-                result.shopFormattedData.Recommended.items = items;
-              })
-              .catch((err) => {
-                console.log('error in find', err);
-              });
-          } else {
-
-            await FoodItem.find({ category: categoryList[i].category })
-              .then((items) => {
-                result.shopFormattedData[categoryList[i].category] = { 'items': items }
-              })
-              .catch((err) => {
-                console.log('error in find', err);
-              });
-
-            if (categoryList[i].subCat) {
-              for (let j = 0; j < categoryList[i].subCat.length; j++) {
-                await FoodItem.find({ category: categoryList[i].category, subCategory: categoryList[i].subCat[j] })
-                  .then((items) => {
-                    if (!result.shopFormattedData[categoryList[i].category]) {
-                      result.shopFormattedData[categoryList[i].category] = {};
-                    }
-                    result.shopFormattedData[categoryList[i].category][categoryList[i].subCat[j]] = items;
-                  })
-                  .catch((err) => {
-                    console.log('error in find', err);
-                  });
-              }
-            }
-          }
-        }
-
-        return result;
-      }
-
       let status = 200;
       if (!err) {
-        formatDataCategorywise()
+        validateCartItems()
           .then((data) => {
             result = data;
             res.status(status).send(result)
