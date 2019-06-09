@@ -11447,7 +11447,7 @@ let FoodItemSchema = new mongoose.Schema({
   },
   isPopular: Boolean,
   inStock: Boolean,
-  itemDiscount: String,
+  itemDiscount: Number,
   isVeg: Boolean,
   name: {
     type: 'String',
@@ -11455,8 +11455,9 @@ let FoodItemSchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
-  price: String,
+  price: Number,
   recommended: Boolean,
+  quantity: Number,
   restId: {
     type: 'String',
     required: true,
