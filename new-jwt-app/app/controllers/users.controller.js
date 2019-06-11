@@ -11,6 +11,7 @@ const HttpData = require('../models/httpError.model');
 const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
 
 module.exports = {
+
   add: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
@@ -37,6 +38,7 @@ module.exports = {
       }
     });
   },
+
   login: (req, res) => {
     const { name, password } = req.body;
 
@@ -53,7 +55,7 @@ module.exports = {
                 try {
                   status = 200;
                   // Create a token
-                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, uuid: user.uuid};
+                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, uuid: user.uuid };
                   const options = { expiresIn: '1d', issuer: 'https://test.com' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
@@ -99,6 +101,7 @@ module.exports = {
       }
     });
   },
+
   getAll: (req, res) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       let result = {};
@@ -128,36 +131,6 @@ module.exports = {
         result = HttpData(status, null, err);
         res.status(status).send(result);
       }
-    });
-  },
-
-  addAddress: (req, res) => {
-    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
-      let result = {};
-      let status = 201;
-      const payload = req.decoded;
-      //  we used when we created the token
-      console.log('payload', payload);
-
-      let address = req.body;
-
-      if (!err && address) {
-        Address.create(address, (err) => {
-          if (!err) {
-            result = HttpData(status, 'Item Created successfully');
-            result.result = address;
-          } else {
-            status = 409;
-            result = HttpData(status, 'Item Already Exists', err);
-          }
-          res.status(status).send(result);
-        });
-      } else {
-        status = 500;
-        result = HttpData(status, null, err);
-        res.status(status).send(result);
-      }
-
     });
   }
 

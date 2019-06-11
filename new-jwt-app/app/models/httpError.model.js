@@ -20,6 +20,11 @@ error.e204 = {
   message: 'No Content'
 }
 
+error.e302 = {
+  status: 302,
+  message: 'Found'
+}
+
 error.e304 = {
   status: 304,
   message: 'Not Modified'

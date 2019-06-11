@@ -10,6 +10,7 @@ const ShopService = require('../services/shop.utils.service');
 const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
 
 module.exports = {
+
   getShopDummy: (req, res) => {
     res.status(200).send(shopData);
   },

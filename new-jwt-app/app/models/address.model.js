@@ -11,6 +11,12 @@ const addressSchema = new Schema({
     trim: true,
     unique: true
   },
+  userUUID: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
   contact: String,
   address1: String,
   address2: String,
