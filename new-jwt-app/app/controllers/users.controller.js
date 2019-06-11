@@ -53,8 +53,8 @@ module.exports = {
                 try {
                   status = 200;
                   // Create a token
-                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, };
-                  const options = { expiresIn: '2d', issuer: 'https://test.com' };
+                  const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, uuid: user.uuid};
+                  const options = { expiresIn: '1d', issuer: 'https://test.com' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
 
@@ -66,7 +66,8 @@ module.exports = {
                     userName: user.name,
                     isAdmin: user.isAdmin,
                     accessLevel: user.accessLevel,
-                    token: token
+                    token: token,
+                    uuid: user.uuid
                   };
                   // req.session.loggedInUser = user.name; 
                   // console.log('req.session', req.session);

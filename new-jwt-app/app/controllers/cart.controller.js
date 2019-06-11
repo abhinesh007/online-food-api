@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+const uuidv1 = require('uuid/v1');
+
 mongoose.Promise = Promise;
 
 const shopData = require('../models/shop.model').shop_data;
@@ -54,12 +56,19 @@ module.exports = {
 
       let result = {};
       result.cartResponse = {
-        cartItems: [],
-        cartInvalidItems: [],
+        cartItems: {
+          valid: [],
+          invalid: []
+        },
         cartStatus: {
-          status: 'Invalid',
-          statusMsg: ''
-        }
+          status: 'invalid',
+          statusMsg: '',
+          cartId: reqData.cartId,
+          cartTotal: 0
+        },
+        userName: tokenData.user,
+        userUUID: tokenData.uuid
+        
       };
 
 
@@ -74,10 +83,11 @@ module.exports = {
                   item.quantity = reqItem.quantity; // set quantity back to cart
                   if ((item.restId == reqItem.restId) && item.enabled && item.inStock) {
                     allCartItemsValid = true;
-                    result.cartResponse.cartItems.push(item);
+                    result.cartResponse.cartStatus.cartTotal = result.cartResponse.cartStatus.cartTotal + (item.quantity * item.price);
+                    result.cartResponse.cartItems.valid.push(item);
                   } else {
                     allCartItemsValid = false;
-                    result.cartResponse.cartInvalidItems.push(item)
+                    result.cartResponse.cartItems.invalid.push(item)
                   }
                 })
                 .catch((err) => {
@@ -86,12 +96,13 @@ module.exports = {
             }
             if (allCartItemsValid) {
               result.cartResponse.cartStatus.status = 'valid';
-              result.cartResponse.cartStatus.statusMsg = 'cart validated';
+              result.cartResponse.cartStatus.statusMsg = 'cart validated, all items are in stock';
             } else {
               result.cartResponse.cartStatus.status = 'invalid';
-              result.cartResponse.cartStatus = 'some items in cart are invalid';
+              result.cartResponse.cartStatus.statusMsg = 'some items in cart are out of stock';
             }
           }
+          result.cartResponse.cartStatus.cartId = reqData.cartId;
           return result;
         } catch (error) {
           console.log('Some thing wrong went while iteration in validating cart', error);
@@ -99,10 +110,11 @@ module.exports = {
       }
 
       saveCartToDb = async (req, res, cartData) => {
-        Cart.create(cartData)
-          .then(
-
-          )
+        let query = { 'cartStatus.cartId': cartData.cartResponse.cartStatus.cartId }
+        await Cart.findOneAndUpdate(query, cartData.cartResponse, { upsert: true, new: true })
+          .then((data) => {
+            // console.log('data', data);
+          })
           .catch((error) => {
             console.log(error);
             status = 500;
@@ -121,7 +133,9 @@ module.exports = {
               validateCartItems(isUserValidated)
                 .then((data) => {
                   result = data;
-                  // saveCartToDb(req, res, data);
+                  data.cartResponse.userName = tokenData.user;
+                  data.cartResponse.userUUID = tokenData.uuid;
+                  saveCartToDb(req, res, data);
                   res.status(status).send(result)
                 })
                 .catch((error) => {
@@ -137,6 +151,7 @@ module.exports = {
           validateCartItems(isUserValidated)
             .then((data) => {
               result = data;
+              saveCartToDb(req, res, data);
               res.status(status).send(result)
             })
             .catch((error) => {
