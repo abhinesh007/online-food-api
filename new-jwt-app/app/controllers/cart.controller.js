@@ -14,39 +14,6 @@ const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/n
 
 module.exports = {
 
-  // tokenData - 
-  // user: 'admin1',
-  // isAdmin: true,
-  // accessLevel: 'RW'
-
-  // getShopInventory: (req, res) => {
-  //   mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
-  //     let result = {};
-  //     let status = 200;
-  //     if (!err) {
-  //       // const payload = req.decoded;
-  //       //  we used when we created the token
-  //       // console.log('payload', payload);
-
-  //       FoodItem.find({}, (err, items) => {
-  //         if (!err) {
-  //           result = HttpData(status);
-  //           result.shopItems = items;
-  //         } else {
-  //           status = 500;
-  //           result = HttpData(status, null, err);
-  //         }
-  //         res.status(status).send(result);
-  //       });
-
-  //     } else {
-  //       status = 500;
-  //       result = HttpData(status, null, err);
-  //       res.status(status).send(result);
-  //     }
-  //   });
-  // },
-
   validateCart: (req, res, next) => {
     mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
       const tokenData = req.decoded;
@@ -68,9 +35,7 @@ module.exports = {
         },
         userName: tokenData.user,
         userUUID: tokenData.uuid
-        
       };
-
 
       validateCartItems = async (isUserValidated) => {
         try {
@@ -168,24 +133,6 @@ module.exports = {
         res.status(status).send(result);
       }
 
-      let status = 200;
-      if (!err) {
-        // validateCartItems()
-        //   .then((data) => {
-        //     result = data;
-        //     res.status(status).send(result)
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //     status = 500;
-        //     result = HttpData(status, null, err);
-        //     res.status(status).send(result);
-        //   });
-      } else {
-        status = 500;
-        result = HttpData(status, null, err);
-        res.status(status).send(result);
-      }
     });
   }
 
