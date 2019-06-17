@@ -15,6 +15,7 @@ let orderSchema = new mongoose.Schema({
     unique: true
   },
   orderTime: String,
+  orderStatus: String,
   userUUID: String,
   // createdAt: { type: Date, expires: '15s', default: Date.now }
 });

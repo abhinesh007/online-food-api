@@ -6,8 +6,11 @@ module.exports = (router) => {
     .post(validateToken, controller.createOrder)
   
     router.route('/get/order/:orderId')
-    .get(controller.getSingleOrder)
+    .get(validateToken, controller.getSingleOrder)
 
     router.route('/get/userorder/:userUUID')
-    .get(controller.getUserOrder)
+    .get(validateToken, controller.getUserOrder)
+    
+    router.route('/get/all/orders')
+    .get(validateToken, controller.getAllOrder)
 };
