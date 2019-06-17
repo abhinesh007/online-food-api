@@ -6,5 +6,5 @@ module.exports = (router) => {
     .post(validateToken, controller.addAddress)
   
     router.route('/get/address/:userUUID')
-    .get(controller.getAddress);
+    .get(controller.getAddress)
 };

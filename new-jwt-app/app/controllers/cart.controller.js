@@ -101,7 +101,7 @@ module.exports = {
                   data.cartResponse.userName = tokenData.user;
                   data.cartResponse.userUUID = tokenData.uuid;
                   saveCartToDb(req, res, data);
-                  res.status(status).send(result)
+                  res.status(200).send(result)
                 })
                 .catch((error) => {
                   console.log(error);
@@ -117,7 +117,7 @@ module.exports = {
             .then((data) => {
               result = data;
               saveCartToDb(req, res, data);
-              res.status(status).send(result)
+              res.status(200).send(result)
             })
             .catch((error) => {
               console.log(error);

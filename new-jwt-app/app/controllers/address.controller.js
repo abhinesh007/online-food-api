@@ -12,11 +12,11 @@ module.exports = {
 		mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
 			let result = {};
 			let status = 201;
-			const payload = req.decoded;
-			console.log('payload', payload);
+			const tokenData = req.decoded;
+			console.log('tokenData', tokenData);
 
 			let address = req.body;
-			address.userUUID = payload.uuid;
+			address.userUUID = tokenData.uuid;
 
 			if (!err && address) {
 				Address.create(address, (err) => {
@@ -43,7 +43,7 @@ module.exports = {
 		mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
 
 			let result = {};
-			let status = 302;
+			let status = 200;
 			const reqUserUUID = req.params.userUUID;
 
 			if (!err) {
