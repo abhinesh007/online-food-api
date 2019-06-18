@@ -47,8 +47,8 @@ module.exports = {
 			const reqUserUUID = req.params.userUUID;
 
 			if (!err) {
-				Address.findOne({ userUUID: reqUserUUID }, function (error, address) {
-					if (!error) {
+				Address.findOne({ userUUID: reqUserUUID }, function (err, address) {
+					if (!err) {
 						console.log('address', address);
 						result = HttpData(status, '');
 						result.address = address;

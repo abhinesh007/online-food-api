@@ -59,8 +59,8 @@ module.exports = {
       const reqOrderId = req.params.orderId;
 
       if (!err) {
-        Order.findOne({ orderId: reqOrderId }, function (error, order) {
-          if (!error) {
+        Order.findOne({ orderId: reqOrderId }, function (err, order) {
+          if (!err) {
             console.log('order', order);
             result = HttpData(status, '');
             result.order = order;
@@ -88,8 +88,8 @@ module.exports = {
       const reqUserUUID = req.params.userUUID;
 
       if (!err) {
-        Order.find({ userUUID: reqUserUUID }, function (error, order) {
-          if (!error) {
+        Order.find({ userUUID: reqUserUUID }, function (err, order) {
+          if (!err) {
             console.log('order', order);
             result = HttpData(status, '');
             result.order = order;
