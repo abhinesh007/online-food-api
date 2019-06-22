@@ -6,8 +6,10 @@ const HttpData = require('../models/httpError.model');
 
 // enum
 const orderStatus = Object.freeze({
-  OPEN:   Symbol('open'),
-  CLOSED:  Symbol('closed'),
+  PENDING:   Symbol('pending'),
+  PREPARING:   Symbol('preparing'),
+  ON_THE_WAY:   Symbol('oneTheWay'),
+  DELIVERED:  Symbol('delivered'),
   RETURNED: Symbol('returned')
 });
 
@@ -124,6 +126,50 @@ module.exports = {
               result = HttpData(status, '');
               result.orders = order;
               res.status(status).send(result);
+            } else {
+              status = 500;
+              result = HttpData(status, null, err);
+              res.status(status).send(result);
+            }
+          });
+        } else {
+          status = 500;
+          result = HttpData(status, null, err);
+          res.status(status).send(result);
+        }
+      } else {
+        status = 401;
+        result = HttpData(status, 'Unauthorized, operation only permissable to Admin', null);
+        res.status(status).send(result);
+      }
+
+    });
+  },
+
+  deleteSingleOrder: (req, res) => {
+
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+
+      let result = {};
+      let status = 200;
+      const tokenData = req.decoded;
+      const reqOrderId = req.params.orderId;
+
+      if(tokenData.isAdmin && tokenData.accessLevel == 'RW') {
+        if (!err) {
+          Order.findOneAndDelete({ orderId: reqOrderId }, function (err, order) {
+            if (!err ) {
+              Order.find({}, function (err, orders) {
+                if (!err ) {
+                  result = HttpData(status, '');
+                  result.orders = orders;
+                  res.status(status).send(result);
+                } else {
+                  status = 500;
+                  result = HttpData(status, null, err);
+                  res.status(status).send(result);
+                }
+              })
             } else {
               status = 500;
               result = HttpData(status, null, err);

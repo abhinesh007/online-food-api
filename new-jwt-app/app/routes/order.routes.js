@@ -8,6 +8,9 @@ module.exports = (router) => {
     router.route('/get/order/:orderId')
     .get(validateToken, controller.getSingleOrder)
 
+    router.route('/delete/order/:orderId')
+    .get(validateToken, controller.deleteSingleOrder)
+
     router.route('/get/userorder/:userUUID')
     .get(validateToken, controller.getUserOrder)
     
