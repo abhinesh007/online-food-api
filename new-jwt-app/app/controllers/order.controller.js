@@ -6,11 +6,11 @@ const HttpData = require('../models/httpError.model');
 
 // enum
 const orderStatus = Object.freeze({
-  PENDING:   Symbol('pending'),
-  PREPARING:   Symbol('preparing'),
-  ON_THE_WAY:   Symbol('oneTheWay'),
-  DELIVERED:  Symbol('delivered'),
-  RETURNED: Symbol('returned')
+  PENDING: 'pending',
+  PREPARING: 'preparing',
+  ON_THE_WAY: 'oneTheWay',
+  DELIVERED: 'delivered',
+  RETURNED: 'returned'
 });
 
 const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
@@ -28,7 +28,7 @@ module.exports = {
       let order = req.body;
       order.userUUID = tokenData.uuid;
       order.userName = tokenData.user;
-      order.orderStatus = orderStatus.OPEN;
+      order.orderStatus = orderStatus.PENDING;
       order.orderId = uuid();
 
       if (!err && order) {
@@ -118,10 +118,10 @@ module.exports = {
       let status = 200;
       const tokenData = req.decoded;
 
-      if(tokenData.isAdmin && tokenData.accessLevel == 'RW') {
+      if (tokenData.isAdmin && tokenData.accessLevel == 'RW') {
         if (!err) {
           Order.find({}, function (err, order) {
-            if (!err ) {
+            if (!err) {
               console.log('order', order);
               result = HttpData(status, '');
               result.orders = order;
@@ -155,12 +155,12 @@ module.exports = {
       const tokenData = req.decoded;
       const reqOrderId = req.params.orderId;
 
-      if(tokenData.isAdmin && tokenData.accessLevel == 'RW') {
+      if (tokenData.isAdmin && tokenData.accessLevel == 'RW') {
         if (!err) {
           Order.findOneAndDelete({ orderId: reqOrderId }, function (err, order) {
-            if (!err ) {
+            if (!err) {
               Order.find({}, function (err, orders) {
-                if (!err ) {
+                if (!err) {
                   result = HttpData(status, '');
                   result.orders = orders;
                   res.status(status).send(result);
@@ -170,6 +170,47 @@ module.exports = {
                   res.status(status).send(result);
                 }
               })
+            } else {
+              status = 500;
+              result = HttpData(status, null, err);
+              res.status(status).send(result);
+            }
+          });
+        } else {
+          status = 500;
+          result = HttpData(status, null, err);
+          res.status(status).send(result);
+        }
+      } else {
+        status = 401;
+        result = HttpData(status, 'Unauthorized, operation only permissable to Admin', null);
+        res.status(status).send(result);
+      }
+
+    });
+  },
+
+  updateSingleOrder: (req, res) => {
+
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+
+      let result = {};
+      let status = 200;
+      const tokenData = req.decoded;
+      let reqOrderId;        
+      if(req.body.orderStatus || req.body.orderId) {
+        reqOrderId = req.body.orderId;
+      }
+
+      if (tokenData.isAdmin && tokenData.accessLevel == 'RW') {
+        if (!err) {
+          let query = { 'orderId': reqOrderId }
+          Order.findOneAndUpdate(query, req.body, { upsert: true }, function (err, order) {
+            if (!err) {
+              console.log('order', order);
+              result = HttpData(status, '');
+              result.order = order;
+              res.status(status).send(result);
             } else {
               status = 500;
               result = HttpData(status, null, err);

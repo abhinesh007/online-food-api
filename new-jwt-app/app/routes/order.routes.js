@@ -16,4 +16,7 @@ module.exports = (router) => {
     
     router.route('/get/all/orders')
     .get(validateToken, controller.getAllOrder)
+
+    router.route('/update/order')
+    .post(validateToken, controller.updateSingleOrder)
 };
