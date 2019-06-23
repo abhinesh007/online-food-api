@@ -11434,28 +11434,30 @@ let shop_data = {
 
 let FoodItemSchema = new mongoose.Schema({
   category: String,
+  subCategory: String,
   cloudinaryImageId: String,
   description: String,
   displayOrder: String,
-  enabled: String,
+  enabled: Boolean,
   id: {
     type: 'String',
     required: true,
     trim: true,
     unique: true
   },
-  isPopular: String,
-  inStock: String,
-  itemDiscount: String,
-  isVeg: String,
+  isPopular: Boolean,
+  inStock: Boolean,
+  itemDiscount: Number,
+  isVeg: Boolean,
   name: {
     type: 'String',
     required: true,
     trim: true,
     unique: true
   },
-  price: String,
-  recommended: String,
+  price: Number,
+  recommended: Boolean,
+  quantity: Number,
   restId: {
     type: 'String',
     required: true,
@@ -11464,6 +11466,75 @@ let FoodItemSchema = new mongoose.Schema({
   },
 });
 
+const CATEGORY_LIST = [
+  {
+    category: 'Recommended',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Main-Course',
+    collapsed: false,
+    subCat: [
+      'Veg',
+      'Egg',
+      'Non-Veg',
+      'Dal',
+      'Biyani',
+      'Rice-Breads',
+      'Fried-Rice-Noodles'
+    ]
+  },
+  {
+    category: 'Soups',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Starters',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Egg',
+      'Non-Veg',
+      'Platter'
+    ]
+  },
+  {
+    category: 'Shop-special',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Thalis',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Combos',
+    collapsed: true,
+    subCat: [
+      'Veg',
+      'Non-Veg'
+    ]
+  },
+  {
+    category: 'Desserts',
+    collapsed: true,
+    subCat: null
+  },
+  {
+    category: 'Baverages',
+    collapsed: true,
+    subCat: null
+  }
+];
 // let FoodItemsListSchema = new mongoose.Schema({
 //   items: [FoodItemSchema],
 // });
@@ -11471,5 +11542,6 @@ let FoodItemSchema = new mongoose.Schema({
 
 module.exports = {
   shop_data: shop_data,
+  CATEGORY_LIST: CATEGORY_LIST,
   FoodItemSchema: mongoose.model('FoodItem', FoodItemSchema)
 } 

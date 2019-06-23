@@ -10,6 +10,12 @@ module.exports = (router) => {
   router.route('/shop/:data')
     .get(shopController.getShopInventory)
 
+  router.route('/shop/data/categorywise')
+    .get(shopController.getShopFormattedInventory)
+
   router.route('/shop/update')
     .post(shopController.updateFoodItem)
+
+  router.route('/shop/delete')
+    .post(shopController.deleteFoodItem)
 };

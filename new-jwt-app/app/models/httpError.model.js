@@ -1,76 +1,81 @@
-let error = {};
+let codes = {};
 
-error.e200 = {
+codes.e200 = {
   status: 200,
   message: 'Success'
 }
 
-error.e201 = {
+codes.e201 = {
   status: 201,
   message: 'Created'
 }
 
-error.e202 = {
+codes.e202 = {
   status: 202,
   message: 'Accepted'
 }
 
-error.e204 = {
+codes.e204 = {
   status: 204,
   message: 'No Content'
 }
 
-error.e304 = {
+codes.e302 = {
+  status: 302,
+  message: 'Found'
+}
+
+codes.e304 = {
   status: 304,
   message: 'Not Modified'
 }
 
-error.e400 = {
+codes.e400 = {
   status: 400,
   message: 'Bad Request'
 }
 
-error.e401 = {
+codes.e401 = {
   status: 401,
   message: 'Unauthorized'
 }
 
-error.e402 = {
+codes.e402 = {
   status: 402,
   message: 'Payment Required'
 }
 
-error.e403 = {
+codes.e403 = {
   status: 403,
   message: 'Forbidden'
 }
 
-error.e404 = {
+codes.e404 = {
   status: 404,
   message: 'Not Found'
 }
 
-error.e409 = {
+codes.e409 = {
   status: 409,
   message: 'Conflict'
 }
 
-error.e500 = {
+codes.e500 = {
   status: 500,
   message: 'Internal Server Error'
 }
 
-error.e502 = {
+codes.e502 = {
   status: 502,
   message: 'Bad Gateway'
 }
 
-error.e503 = {
+codes.e503 = {
   status: 503,
   message: 'Service Unavailable'
 }
 
-error.e504 = {
+codes.e504 = {
   status: 504,
   message: 'Gateway Timeout'
 }
@@ -79,10 +84,10 @@ let errorGenerator = (code, errorMsg, err) => {
   let errObj = {};
 
   if (code) {
-    errObj = error[`${'e' + code}`];
+    errObj = JSON.parse(JSON.stringify(codes[`${'e' + code}`]));
   }
   if (err) {
-    errObj.error = err;
+    errObj.codes = err;
     errObj.errorMsg = errorMsg ? errorMsg : 'Something went wrong!';
   } else {
     errObj.userMsg = errorMsg ? errorMsg : 'Operation completed Successfully!';
