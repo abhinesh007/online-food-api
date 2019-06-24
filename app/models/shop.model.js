@@ -11530,7 +11530,7 @@ const CATEGORY_LIST = [
     subCat: null
   },
   {
-    category: 'Baverages',
+    category: 'Beverages',
     collapsed: true,
     subCat: null
   }
