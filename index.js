@@ -47,6 +47,9 @@ if (environment !== 'production') {
   app.use(logger('dev'));
 }
 
+app.get('/', (req, res) => {
+  res.json({"message": "Welcome to foodshop API Middleware"});
+});
 app.use('/api/v1', routes(router));
 
 app.listen(process.env.PORT || 5000, () => {
