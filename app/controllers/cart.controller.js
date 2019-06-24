@@ -10,7 +10,7 @@ const HttpData = require('../models/httpError.model');
 const Cart = require('../models/cart.model');
 const ShopService = require('../services/shop.utils.service');
 
-const connUri = process.env.MONGO_LOCAL_CONN_URL || 'mongodb://127.0.0.1:27017/node-jwt';
+const connUri = process.env.MONGOLAB_URI || 'mongodb://127.0.0.1:27017/node-jwt';
 
 module.exports = {
 
