@@ -14,22 +14,33 @@ const router = express.Router();
 
 
 const allowedOrigins = ['http://localhost:4200',
-  'http://myapp.com'];
+  'https://online-food.herokuapp.com'];
 
-  app.use(cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin 
-      // (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = 'The CORS policy for this site does not ' +
-          'allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin 
+    // (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not ' +
+        'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
     }
-  }))
+    return callback(null, true);
+  }
+}))
 
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    if (req.headers.host === 'your-app.herokuapp.com')
+      return res.redirect(301, 'https://online-food-api.herokuapp.com/');
+    if (req.headers['x-forwarded-proto'] !== 'https')
+      return res.redirect('https://' + req.headers.host + req.url);
+    else
+      return next();
+  } else
+    return next();
+});
 
 const environment = process.env.NODE_ENV; // development
 const stage = require('./config/config')[environment];
@@ -48,7 +59,7 @@ if (environment !== 'production') {
 }
 
 app.get('/', (req, res) => {
-  res.json({"message": "Welcome to foodshop API Middleware"});
+  res.json({ "message": "Welcome to foodshop API Middleware" });
 });
 app.use('/api/v1', routes(router));
 
