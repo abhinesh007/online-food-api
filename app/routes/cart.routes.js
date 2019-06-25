@@ -6,10 +6,4 @@ module.exports = (router) => {
     .post(validateCartToken, controller.validateCart)
     // .get(validateToken, controller.getAll); // This route is now protected
 
-//   router.route('/address')
-//     .post(validateToken, controller.addAddress)
-//     .get(validateToken, controller.getAll);
-
-//   router.route('/login')
-//     .post(controller.login);
 };
