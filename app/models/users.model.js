@@ -14,6 +14,12 @@ const userSchema = new Schema({
     trim: true,
     unique: true
   },
+  userEmail: {
+    type: 'String',
+    required: true,
+    trim: true,
+    unique: true
+  },
   password: {
     type: 'String',
     required: true,

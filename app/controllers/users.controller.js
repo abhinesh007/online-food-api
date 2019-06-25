@@ -18,6 +18,10 @@ module.exports = {
       let status = 201;
       if (!err) {
         let userData = req.body;
+        if (userData.accessLevel === undefined && userData.isAdmin === undefined) {
+          userData.accessLevel = '';
+          userData.isAdmin = false;
+        };
         userData.uuid = uuidv1();
         const user = new User(userData); // document = instance of a model
         // TODO: We can hash the password here before we insert instead of in the model
