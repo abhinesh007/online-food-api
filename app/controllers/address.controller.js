@@ -18,6 +18,7 @@ module.exports = {
       let address = req.body;
       address.userUUID = tokenData.uuid;
 
+      delete address._id;
       if (!err && address) {
         Address.create(address, (err) => {
           if (!err) {

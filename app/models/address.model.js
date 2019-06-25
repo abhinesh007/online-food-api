@@ -12,10 +12,7 @@ const addressSchema = new Schema({
     unique: true
   },
   userUUID: {
-    type: 'String',
-    required: true,
-    trim: true,
-    unique: true
+    type: 'String'
   },
   contact: String,
   address1: String,
