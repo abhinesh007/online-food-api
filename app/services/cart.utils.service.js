@@ -22,7 +22,7 @@ module.exports = {
       if (authorizationHeader && token) {
         const options = {
           expiresIn: '2d',
-          issuer: 'https://test.com'
+          issuer: 'https://online-food-api.herokuapp.com'
         };
         try {
           // verify makes sure that the token hasn't expired and has been issued by us

@@ -28,7 +28,26 @@ module.exports = {
         user.save((err, user) => {
           if (!err) {
             result = HttpData(status, 'User Created successfully');
-            result.result = user;
+
+            const payload = {
+              userEmail: user.email ? user.email : '',
+              user: user.name,
+              isAdmin: user.isAdmin,
+              accessLevel: user.accessLevel,
+              uuid: user.uuid
+            };
+            const options = { expiresIn: '1d', issuer: 'https://online-food-api.herokuapp.com' };
+            const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
+            const token = jwt.sign(payload, secret, options);
+
+            result.userData = {
+              userEmail: user.email ? user.email : '',
+              name: user.name,
+              isAdmin: user.isAdmin,
+              accessLevel: user.accessLevel,
+              token: token,
+              uuid: user.uuid
+            };
           } else {
             status = 409;
             result = HttpData(status, 'User Already Exists', err);
@@ -60,7 +79,7 @@ module.exports = {
                   status = 200;
                   // Create a token
                   const payload = { user: user.name, isAdmin: user.isAdmin, accessLevel: user.accessLevel, uuid: user.uuid };
-                  const options = { expiresIn: '1d', issuer: 'https://test.com' };
+                  const options = { expiresIn: '1d', issuer: 'https://online-food-api.herokuapp.com' };
                   const secret = process.env.JWT_SECRET || 'addjsonwebtokensecretherelikeQuiscustodietipsoscustodes';
                   const token = jwt.sign(payload, secret, options);
 
@@ -69,7 +88,7 @@ module.exports = {
                   const userEmail = user.email ? user.email : '';
                   result.userData = {
                     userEmail: userEmail,
-                    userName: user.name,
+                    name: user.name,
                     isAdmin: user.isAdmin,
                     accessLevel: user.accessLevel,
                     token: token,

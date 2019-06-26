@@ -8,7 +8,7 @@ module.exports = {
       const token = req.headers.authorization.split(' ')[1] || 'sdd.add.cada'; // Bearer <token>
       const options = {
         expiresIn: '2d',
-        issuer: 'https://test.com'
+        issuer: 'https://online-food-api.herokuapp.com'
       };
       try {
         // verify makes sure that the token hasn't expired and has been issued by us
