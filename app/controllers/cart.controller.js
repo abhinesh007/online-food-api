@@ -33,8 +33,8 @@ module.exports = {
           cartId: reqData.cartId,
           cartTotal: 0
         },
-        userName: tokenData.user,
-        userUUID: tokenData.uuid
+        userName: tokenData && tokenData.user,
+        userUUID: tokenData && tokenData.uuid
       };
 
       validateCartItems = async (isUserValidated) => {
