@@ -88,7 +88,7 @@ module.exports = {
                   const userEmail = user.email ? user.email : '';
                   result.userData = {
                     userEmail: userEmail,
-                    userame: user.name,
+                    name: user.name,
                     isAdmin: user.isAdmin,
                     accessLevel: user.accessLevel,
                     token: token,
