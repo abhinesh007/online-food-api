@@ -88,7 +88,7 @@ module.exports = {
                   const userEmail = user.email ? user.email : '';
                   result.userData = {
                     userEmail: userEmail,
-                    name: user.name,
+                    userame: user.name,
                     isAdmin: user.isAdmin,
                     accessLevel: user.accessLevel,
                     token: token,
@@ -155,6 +155,76 @@ module.exports = {
         res.status(status).send(result);
       }
     });
+  },
+
+  deleteAdminUser: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let status = 202;
+      if (!err) {
+        const payload = req.decoded;
+        if (payload && payload.isAdmin && payload.accessLevel === 'RW') {
+          let query = { '_id': req.body._id };
+          User.findOneAndDelete(query, (err, item) => {
+            if (!err) {
+              result = HttpData(status, 'User deleted Successfully');
+              result.result = item;
+            }
+            else {
+              status = 404;
+              result = HttpData(status, "User Not Found", err);
+            }
+            res.status(status).send(result);
+          });
+        }
+        else {
+          status = 401;
+          result = HttpData(status, 'You do not have permission to delete a user');
+          res.status(status).send(result);
+        }
+      }
+      else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+    })
+  },
+
+  updateUserDetails: (req, res) => {
+    mongoose.connect(connUri, { useNewUrlParser: true }, (err) => {
+      let result = {};
+      let status = 200;
+      let data = Object.assign({}, req.body)
+      if (!err) {
+        const payload = req.decoded;
+        if (payload && payload.isAdmin && payload.accessLevel === 'RW') {
+          let query = { '_id': req.body._id };
+          const updatedUser = new User(data);
+          delete updatedUser._doc._id;
+          User.findByIdAndUpdate(query, updatedUser, { upsert: true }, (err, item) => {
+            if (!err) {
+              result = HttpData(status, 'User Details Updated successfully');
+              result.result = item;
+            } else {
+              status = 404;
+              result = HttpData(status, 'User Not Found', err);
+            }
+            res.status(status).send(result);
+          })
+        }
+        else {
+          status = 401;
+          result = HttpData(status, 'You do not have permission to delete a user');
+          res.status(status).send(result);
+        }
+      }
+      else {
+        status = 500;
+        result = HttpData(status, null, err);
+        res.status(status).send(result);
+      }
+    })
   }
 
 }

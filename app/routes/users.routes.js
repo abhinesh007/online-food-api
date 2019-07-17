@@ -8,4 +8,10 @@ module.exports = (router) => {
 
   router.route('/login')
     .post(controller.login);
+
+  router.route('/user/delete')
+  .post(validateToken, controller.deleteAdminUser);  
+
+  router.route('/user/update')
+  .post(validateToken, controller.updateUserDetails);
 };
