@@ -46,7 +46,8 @@ module.exports = {
               isAdmin: user.isAdmin,
               accessLevel: user.accessLevel,
               token: token,
-              uuid: user.uuid
+              uuid: user.uuid,
+              _id: user._id
             };
           } else {
             status = 409;
