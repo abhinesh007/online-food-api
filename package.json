@@ -9,6 +9,9 @@
     "prod": "cross-env NODE_ENV=production nodemon index.js",
     "debug-dev": "cross-env NODE_ENV=development nodemon --inspect index.js"
   },
+    "engines": {
+    "node": "9.6.0"
+  },
   "author": "Abhinesh Gour",
   "license": "ISC",
   "dependencies": {
